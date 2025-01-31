@@ -1,0 +1,52 @@
+loop_frequency: 1.0
+publishers: 
+  - robot
+  - ee_motor
+  - ee_point
+  - ee_line
+subscribers: []
+callback_clients: []
+callback_servers: []
+
+publisher:
+  robot:
+    type: gafro_system
+    topic: robot
+    callback_queue: robot
+    description: robots/panda/panda.yaml
+    frame: world
+    color:
+      r: 1.0
+      g: 1.0
+      b: 1.0
+      a: 1.0
+  ee_motor:
+    type: gafro_motor
+    topic: ee_motor
+    callback_queue: ee_motor
+    frame: world
+    color:
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      a: 1.0
+  ee_point:
+    type: gafro_point
+    topic: ee_point
+    callback_queue: ee_point
+    frame: world
+    color:
+      r: 1.0
+      g: 0.0
+      b: 0.0
+      a: 1.0
+  ee_line:
+    type: gafro_line
+    topic: ee_line
+    callback_queue: ee_line
+    frame: world
+    color:
+      r: 0.0
+      g: 0.0
+      b: 1.0
+      a: 1.0

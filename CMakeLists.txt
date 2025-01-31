@@ -22,6 +22,7 @@ add_library(gafro_ros2 SHARED)
 
 add_subdirectory(src/gafro_ros2)
 add_subdirectory(apps)
+add_subdirectory(examples)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(gafro_ros2 PUBLIC -Wall -Wextra -Wpedantic -Werror)

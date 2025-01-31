@@ -1,0 +1,1 @@
+add_subdirectory(visualize_franka_robot)
