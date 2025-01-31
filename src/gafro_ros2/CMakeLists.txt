@@ -1,0 +1,4 @@
+add_subdirectory(subscriber)
+add_subdirectory(publisher)
+add_subdirectory(conversion)
+add_subdirectory(serialization)

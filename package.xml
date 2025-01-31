@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>gafro_ros2</name>
+  <version>0.0.0</version>
+  <description>The gafro_ros package</description>
+  <maintainer email="tobi.loew@protonmail.ch">Tobi Löw</maintainer>
+  <author email="tobi.loew@protonmail.ch">Tobi Löw</author>
+  <license>GPLv3</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  
+  <depend>gafro</depend>
+  <depend>gafro_robot_descriptions</depend>
+  <depend>sackmesser_ros2</depend>
+  <depend>rclcpp</depend>
+  <depend>geometry_msgs</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
