@@ -1,6 +1,5 @@
 find_package(gafro REQUIRED)
 find_package(gafro_robot_descriptions REQUIRED)
-find_package(gafro_ros2 REQUIRED)
 find_package(sackmesser_ros2 REQUIRED)
 
 add_executable(visualize_franka_robot visualize_franka_robot.cpp)
@@ -10,18 +9,17 @@ target_compile_options(visualize_franka_robot PUBLIC -Wall -Wextra -Wpedantic -W
 ament_target_dependencies(visualize_franka_robot
   PUBLIC
     sackmesser_ros2
-    gafro_ros2
 )
 
 ament_export_dependencies(
   sackmesser_ros2
-  gafro_ros2
 )
 
 target_link_libraries(visualize_franka_robot
   PUBLIC
     gafro::gafro
     gafro_robot_descriptions::gafro_robot_descriptions
+    gafro_ros2
 )
 
 install(
