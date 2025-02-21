@@ -6,6 +6,8 @@ target_sources(gafro_ros2
         ${CMAKE_CURRENT_LIST_DIR}/Circle.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Plane.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Line.cpp
+
+        ${CMAKE_CURRENT_LIST_DIR}/Wrench.cpp
 )
 
 install(
@@ -16,6 +18,7 @@ install(
         Circle.hpp
         Plane.hpp
         Line.hpp
+        Wrench.hpp
     DESTINATION
         include/gafro_ros2/conversion
 )

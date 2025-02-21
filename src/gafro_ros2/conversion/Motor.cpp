@@ -51,6 +51,24 @@ namespace gafro_ros
         return gafro::Motor<double>(translation, quaternion);
     }
 
+    geometry_msgs::msg::Transform convertToTransform(const gafro::Motor<double> &motor)
+    {
+        geometry_msgs::msg::Transform transform;
+
+        Eigen::Vector<double, 3> translation = motor.getTranslator().toTranslationVector();
+        Eigen::Quaternion<double> rotation = motor.getRotor().quaternion();
+
+        transform.translation.x = translation.x();
+        transform.translation.y = translation.y();
+        transform.translation.z = translation.z();
+        transform.rotation.x = rotation.x();
+        transform.rotation.y = rotation.y();
+        transform.rotation.z = rotation.z();
+        transform.rotation.w = rotation.w();
+
+        return transform;
+    }
+
     // tf::Transform convertToFrame(const gafro::Motor<double> &motor)
     // {
     //     tf::Transform transform;

@@ -19,20 +19,14 @@
 
 #pragma once
 
-#include <gafro/algebra/cga/Motor.hpp>
-#include <geometry_msgs/msg/pose.hpp>
-#include <geometry_msgs/msg/transform.hpp>
+#include <gafro/physics/Wrench.hpp>
+#include <geometry_msgs/msg/wrench.hpp>
 
 namespace gafro_ros
 {
 
-    geometry_msgs::msg::Pose convertToPose(const gafro::Motor<double> &motor);
+    geometry_msgs::msg::Wrench convert(const gafro::Wrench<double> &wrench);
 
-    gafro::Motor<double> convertFromPose(const geometry_msgs::msg::Pose &pose);
-
-    geometry_msgs::msg::Transform convertToTransform(const gafro::Motor<double> &motor);
-
-    // visualization_msgs::msg::MarkerArray convertToMarkerArray(const gafro::Motor<double> &motor, const std::string &frame, const int &id,
-    //                                                           const double &scale, const double &opacity);
+    gafro::Wrench<double> convert(const geometry_msgs::msg::Wrench &wrench_msg);
 
 }  // namespace gafro_ros

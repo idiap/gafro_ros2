@@ -14,6 +14,8 @@ target_sources(gafro_ros2
         ${CMAKE_CURRENT_LIST_DIR}/PlaneVector.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Line.cpp
         ${CMAKE_CURRENT_LIST_DIR}/LineVector.cpp
+
+        ${CMAKE_CURRENT_LIST_DIR}/Wrench.cpp
 )
 
 install(
@@ -31,6 +33,8 @@ install(
         PlaneVector.hpp
         Line.hpp
         LineVector.hpp
+
+        Wrench.hpp
     DESTINATION
         include/gafro_ros2/publisher
 )

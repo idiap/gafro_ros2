@@ -17,6 +17,7 @@ find_package(nav_msgs REQUIRED)
 find_package(gafro REQUIRED)
 find_package(gafro_robot_descriptions REQUIRED)
 find_package(urdf REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 add_library(gafro_ros2 SHARED)
 
@@ -37,6 +38,7 @@ ament_target_dependencies(gafro_ros2
         nav_msgs
         gafro
         urdf
+        tf2_ros
 )
 
 target_include_directories(gafro_ros2 
@@ -54,6 +56,7 @@ ament_export_dependencies(
     visualization_msgs
     nav_msgs
     urdf
+    tf2_ros
 )
 
 target_link_libraries(gafro_ros2

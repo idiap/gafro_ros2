@@ -19,20 +19,31 @@
 
 #pragma once
 
-#include <gafro/algebra/cga/Motor.hpp>
-#include <geometry_msgs/msg/pose.hpp>
-#include <geometry_msgs/msg/transform.hpp>
+#include <gafro/physics/Wrench.hpp>
+#include <geometry_msgs/msg/wrench_stamped.hpp>
+#include <sackmesser_ros2/Publisher.hpp>
 
 namespace gafro_ros
 {
+    class Wrench : public sackmesser_ros::Publisher<geometry_msgs::msg::WrenchStamped, gafro::Wrench<double>>
+    {
+      public:
+        Wrench(sackmesser_ros::Interface *interface, const std::string &name);
 
-    geometry_msgs::msg::Pose convertToPose(const gafro::Motor<double> &motor);
+        ~Wrench();
 
-    gafro::Motor<double> convertFromPose(const geometry_msgs::msg::Pose &pose);
+        geometry_msgs::msg::WrenchStamped createMessage(const gafro::Wrench<double> &sphere) const;
 
-    geometry_msgs::msg::Transform convertToTransform(const gafro::Motor<double> &motor);
+      protected:
+      private:
+        struct Configuration : public sackmesser::Configuration
+        {
+            bool load(const std::string &ns, const std::shared_ptr<sackmesser::Configurations> &server);
 
-    // visualization_msgs::msg::MarkerArray convertToMarkerArray(const gafro::Motor<double> &motor, const std::string &frame, const int &id,
-    //                                                           const double &scale, const double &opacity);
+            std::string frame;
+        };
+
+        Configuration config_;
+    };
 
 }  // namespace gafro_ros

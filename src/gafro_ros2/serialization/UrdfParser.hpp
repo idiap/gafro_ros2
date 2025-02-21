@@ -19,10 +19,10 @@
 
 #pragma once
 
-#include <urdf/model.h>
 #include <yaml-cpp/yaml.h>
 
 #include <string>
+#include <urdf/model.hpp>
 
 namespace gafro_ros
 {

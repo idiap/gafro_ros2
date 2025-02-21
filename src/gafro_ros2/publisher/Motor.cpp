@@ -25,9 +25,22 @@ namespace gafro_ros
 {
     MotorPublisher::MotorPublisher(sackmesser_ros::Interface *interface, const std::string &ns)
       : sackmesser_ros::Publisher<geometry_msgs::msg::PoseStamped, gafro::Motor<double>>(interface, ns)
-    {}
+    {
+        config_ = interface->getConfigurations()->load<Configuration>(ns);
+
+        if (config_.publish_frame)
+        {
+            tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(interface);
+        }
+    }
 
     MotorPublisher::~MotorPublisher() {}
+
+    bool MotorPublisher::Configuration::load(const std::string &ns, const std::shared_ptr<sackmesser::Configurations> &server)
+    {
+        return server->loadParameter(ns + "publish_frame", &publish_frame, true) &&  //
+               server->loadParameter(ns + "frame_name", &frame_name);
+    }
 
     geometry_msgs::msg::PoseStamped MotorPublisher::createMessage(const gafro::Motor<double> &motor) const
     {
@@ -36,6 +49,19 @@ namespace gafro_ros
         pose_msg.header.frame_id = "world";
         pose_msg.header.stamp = getInterface()->now();
         pose_msg.pose = convertToPose(motor);
+
+        if (config_.publish_frame)
+        {
+            geometry_msgs::msg::TransformStamped transform;
+
+            transform.header.stamp = getInterface()->get_clock()->now();
+            transform.header.frame_id = "world";
+            transform.child_frame_id = config_.frame_name;
+
+            transform.transform = convertToTransform(motor);
+
+            tf_broadcaster_->sendTransform(transform);
+        }
 
         return pose_msg;
     }

@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <tf2_ros/transform_broadcaster.h>
+
 #include <gafro/algebra/cga/Motor.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 //
@@ -34,6 +36,20 @@ namespace gafro_ros
         ~MotorPublisher();
 
         geometry_msgs::msg::PoseStamped createMessage(const gafro::Motor<double> &motor) const;
+
+      private:
+        struct Configuration : public sackmesser::Configuration
+        {
+            bool load(const std::string &ns, const std::shared_ptr<sackmesser::Configurations> &server);
+
+            bool publish_frame;
+
+            std::string frame_name;
+        };
+
+        Configuration config_;
+
+        std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
     };
 
 }  // namespace gafro_ros
