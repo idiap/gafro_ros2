@@ -28,7 +28,8 @@ namespace gafro
     template <class T>
     class Motor;
 
-    class SystemVisual;
+    template <class T>
+    class System;
 }  // namespace gafro
 
 namespace gafro_ros
@@ -60,7 +61,7 @@ namespace gafro_ros
       private:
         Configuration config_;
 
-        std::unique_ptr<gafro::SystemVisual> system_;
+        std::unique_ptr<gafro::System<double>> system_;
     };
 
 }  // namespace gafro_ros

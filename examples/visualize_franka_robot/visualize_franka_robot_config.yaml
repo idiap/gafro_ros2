@@ -20,16 +20,20 @@ publisher:
       g: 1.0
       b: 1.0
       a: 1.0
+  robot_motors:
+    topic: robot_motors
+    callback_queue: robot_motors
   ee_motor:
     type: gafro_motor
     topic: ee_motor
     callback_queue: ee_motor
-    frame: world
     color:
       r: 0.0
       g: 1.0
       b: 0.0
       a: 1.0
+    publish_frame: true
+    frame_name: ee_motor
   ee_point:
     type: gafro_point
     topic: ee_point

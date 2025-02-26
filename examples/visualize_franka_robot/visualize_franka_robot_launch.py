@@ -12,7 +12,8 @@ def generate_launch_description():
             package='gafro_ros2',
             namespace='visualize_franka_robot',
             executable='visualize_franka_robot',
-            name='visualize_franka_robot'
+            name='visualize_franka_robot',
+            output='screen'
         ),
         Node(
             package='rviz2',

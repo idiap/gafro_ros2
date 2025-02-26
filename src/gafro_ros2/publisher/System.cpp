@@ -17,12 +17,16 @@
     along with gafro. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <gafro_robot_descriptions/SystemVisual.hpp>
+#include <gafro/robot/Kinematics.hpp>
+#include <gafro/robot/System.hxx>
+// #include <gafro_robot_descriptions/SystemVisual.hpp>
 #include <gafro_robot_descriptions/gafro_robot_descriptions_package_config.hpp>
 #include <gafro_robot_descriptions/serialization/FilePath.hpp>
+#include <gafro_robot_descriptions/serialization/SystemSerialization.hpp>
 #include <gafro_robot_descriptions/serialization/Visual.hpp>
 #include <gafro_ros2/conversion/Motor.hpp>
 #include <gafro_ros2/publisher/System.hpp>
+#include <sackmesser/UtilityFunctions.hpp>
 
 namespace gafro_ros
 {
@@ -40,18 +44,20 @@ namespace gafro_ros
       : sackmesser_ros::Publisher<visualization_msgs::msg::MarkerArray, Eigen::MatrixXd, gafro::Motor<double>>(interface, name)
     {
         config_ = interface->getConfigurations()->load<Configuration>(name);
-        system_ = std::make_unique<gafro::SystemVisual>(config_.description);
+        system_ = std::make_unique<gafro::System<double>>(gafro::SystemSerialization(gafro::FilePath(config_.description)).load());
+
+        interface->addPublisher("gafro_motor_vector", sackmesser::splitString(name, '/')[1] + "_motors");
     }
 
     SystemPublisher::~SystemPublisher() = default;
 
-    visualization_msgs::msg::Marker convertToMarker(const gafro::Visual *visual)
+    visualization_msgs::msg::Marker convertToMarker(const gafro::Link<double>::Visual *visual)
     {
         visualization_msgs::msg::Marker marker;
 
         switch (visual->getType())
         {
-        case gafro::Visual::Type::SPHERE: {
+        case gafro::Link<double>::Visual::Type::SPHERE: {
             const gafro::visual::Sphere *sphere = static_cast<const gafro::visual::Sphere *>(visual);
 
             marker.type = visualization_msgs::msg::Marker::SPHERE;
@@ -62,7 +68,7 @@ namespace gafro_ros
 
             break;
         }
-        case gafro::Visual::Type::MESH: {
+        case gafro::Link<double>::Visual::Type::MESH: {
             const gafro::visual::Mesh *mesh = static_cast<const gafro::visual::Mesh *>(visual);
 
             marker.type = visualization_msgs::msg::Marker::MESH_RESOURCE;
@@ -74,7 +80,7 @@ namespace gafro_ros
 
             break;
         }
-        case gafro::Visual::Type::CYLINDER: {
+        case gafro::Link<double>::Visual::Type::CYLINDER: {
             const gafro::visual::Cylinder *cylinder = static_cast<const gafro::visual::Cylinder *>(visual);
 
             marker.type = visualization_msgs::msg::Marker::CYLINDER;
@@ -85,7 +91,7 @@ namespace gafro_ros
 
             break;
         }
-        case gafro::Visual::Type::BOX: {
+        case gafro::Link<double>::Visual::Type::BOX: {
             const gafro::visual::Box *box = static_cast<const gafro::visual::Box *>(visual);
 
             marker.type = visualization_msgs::msg::Marker::CUBE;
@@ -102,88 +108,6 @@ namespace gafro_ros
         return marker;
     }
 
-    void addLinkVisual(const gafro::SystemVisual *system,                    //
-                       visualization_msgs::msg::MarkerArray &system_visual,  //
-                       const gafro::Link<double> *link,                      //
-                       const gafro::Motor<double> &motor,                    //
-                       int &id,                                              //
-                       const std::string &frame,                             //
-                       const Eigen::VectorXd &joint_positions)
-    {
-        if (system->hasVisual(link->getName()))
-        {
-            const gafro::Visual *visual = system->getVisual(link->getName());
-
-            visualization_msgs::msg::Marker visual_marker = convertToMarker(visual);
-
-            visual_marker.pose = convertToPose(motor * visual->getTransform());
-
-            visual_marker.header.frame_id = frame;
-            // visual_marker.header.stamp = ros::Time::now();
-            visual_marker.ns = link->getName();
-            visual_marker.id = static_cast<int>(system_visual.markers.size());
-
-            system_visual.markers.push_back(visual_marker);
-        }
-
-        for (const auto *child_joint : link->getChildJoints())
-        {
-            if (child_joint->getChildLink())
-            {
-                if (child_joint->isActuated())
-                {
-                    double joint_position;
-
-                    if (child_joint->getIndex() < joint_positions.rows())
-                    {
-                        joint_position = joint_positions[child_joint->getIndex()];
-                    }
-                    else
-                    {
-                        joint_position = 0.0;
-                    }
-
-                    addLinkVisual(system,                                         //
-                                  system_visual,                                  //
-                                  child_joint->getChildLink(),                    //
-                                  motor * child_joint->getMotor(joint_position),  //
-                                  ++id,                                           //
-                                  frame,                                          //
-                                  joint_positions);
-                }
-                else
-                {
-                    addLinkVisual(system,                              //
-                                  system_visual,                       //
-                                  child_joint->getChildLink(),         //
-                                  motor * child_joint->getMotor(0.0),  //
-                                  id,                                  //
-                                  frame,                               //
-                                  joint_positions);
-                }
-            }
-        }
-    }
-
-    visualization_msgs::msg::MarkerArray convertToMarker(const gafro::SystemVisual *system,       //
-                                                         const Eigen::VectorXd &joint_positions,  //
-                                                         gafro::Motor<double> base_motor,         //
-                                                         const std::string &frame)
-    {
-        visualization_msgs::msg::MarkerArray system_visual;
-
-        int id = 0;
-        addLinkVisual(system,                            //
-                      system_visual,                     //
-                      system->getLinks().front().get(),  //
-                      base_motor,                        //
-                      id,                                //
-                      frame,                             //
-                      joint_positions);
-
-        return system_visual;
-    }
-
     visualization_msgs::msg::MarkerArray SystemPublisher::createMessage(const Eigen::MatrixXd &position, const gafro::Motor<double> &base) const
     {
         visualization_msgs::msg::MarkerArray all_markers;
@@ -192,7 +116,31 @@ namespace gafro_ros
 
         for (unsigned j = 0; j < position.cols(); ++j)
         {
-            visualization_msgs::msg::MarkerArray markers = convertToMarker(system_.get(), position.col(j), base, config_.frame);
+            std::vector<gafro::Motor<double>> motors;
+
+            gafro::ForwardKinematics<double> kinematics = system_->computeForwardKinematics(position.col(j), base);
+
+            visualization_msgs::msg::MarkerArray markers;
+
+            for (const auto &pair : kinematics.getLinkPoses())
+            {
+                if (system_->getLink(pair.first)->hasVisual())
+                {
+                    const gafro::Link<double>::Visual *visual = system_->getLink(pair.first)->getVisual();
+
+                    visualization_msgs::msg::Marker visual_marker = convertToMarker(visual);
+
+                    visual_marker.pose = convertToPose(pair.second * visual->getTransform());
+
+                    visual_marker.header.frame_id = config_.frame;
+                    visual_marker.ns = pair.first;
+                    visual_marker.id = static_cast<int>(markers.markers.size());
+
+                    markers.markers.push_back(visual_marker);
+                }
+
+                motors.push_back(pair.second);
+            }
 
             for (visualization_msgs::msg::Marker &marker : markers.markers)
             {
@@ -209,6 +157,8 @@ namespace gafro_ros
             }
 
             id += static_cast<int>(position.rows());
+
+            getInterface()->getCallbacks()->invoke("robot_motors", motors);
         }
 
         return all_markers;
