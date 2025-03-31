@@ -2,6 +2,7 @@ target_sources(gafro_ros2
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/Motor.cpp
         ${CMAKE_CURRENT_LIST_DIR}/MotorVector.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/FrameVector.cpp
         ${CMAKE_CURRENT_LIST_DIR}/System.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Point.cpp
         ${CMAKE_CURRENT_LIST_DIR}/PointVector.cpp

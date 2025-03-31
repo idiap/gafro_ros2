@@ -1,0 +1,33 @@
+loop_frequency: 10
+publishers: 
+  - key_motors
+  - motors
+subscribers: []
+callback_clients: []
+callback_servers: []
+
+publisher:
+  key_motors:
+    type: gafro_frame_vector
+    topic: key_motors
+    callback_queue: key_motors
+    frame: world
+    scale: 0.1
+    use_color: true
+    color:
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      a: 1.0
+  motors:
+    type: gafro_frame_vector
+    topic: motors
+    callback_queue: motors
+    frame: world
+    scale: 0.05
+    use_color: true
+    color:
+      r: 1.0
+      g: 0.0
+      b: 0.0
+      a: 1.0

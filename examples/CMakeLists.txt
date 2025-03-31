@@ -1,1 +1,2 @@
 add_subdirectory(visualize_franka_robot)
+add_subdirectory(interpolate_motors)

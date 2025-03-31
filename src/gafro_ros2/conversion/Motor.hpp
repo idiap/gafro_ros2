@@ -32,7 +32,4 @@ namespace gafro_ros
 
     geometry_msgs::msg::Transform convertToTransform(const gafro::Motor<double> &motor);
 
-    // visualization_msgs::msg::MarkerArray convertToMarkerArray(const gafro::Motor<double> &motor, const std::string &frame, const int &id,
-    //                                                           const double &scale, const double &opacity);
-
 }  // namespace gafro_ros
