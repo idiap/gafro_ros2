@@ -34,7 +34,8 @@ namespace gafro
 
 namespace gafro_ros
 {
-    class SystemPublisher : public sackmesser_ros::Publisher<visualization_msgs::msg::MarkerArray, Eigen::MatrixXd, gafro::Motor<double>>
+    class SystemPublisher
+      : public sackmesser_ros::Publisher<visualization_msgs::msg::MarkerArray, gafro::System<double>, Eigen::MatrixXd, gafro::Motor<double>>
     {
       public:
         SystemPublisher(sackmesser_ros::Interface *interface, const std::string &name);
@@ -45,7 +46,7 @@ namespace gafro_ros
         {
             bool load(const std::string &ns, const std::shared_ptr<sackmesser::Configurations> &server);
 
-            std::string description;
+            // std::string description;
 
             std::string frame;
 
@@ -55,13 +56,14 @@ namespace gafro_ros
             double color_a = 1.0;
         };
 
-        visualization_msgs::msg::MarkerArray createMessage(const Eigen::MatrixXd &position, const gafro::Motor<double> &base) const;
+        visualization_msgs::msg::MarkerArray createMessage(const gafro::System<double> &system, const Eigen::MatrixXd &position,
+                                                           const gafro::Motor<double> &base) const;
 
       protected:
       private:
         Configuration config_;
 
-        std::unique_ptr<gafro::System<double>> system_;
+        // std::unique_ptr<gafro::System<double>> system_;
     };
 
 }  // namespace gafro_ros

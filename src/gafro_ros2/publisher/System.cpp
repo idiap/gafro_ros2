@@ -32,32 +32,32 @@ namespace gafro_ros
 {
     bool SystemPublisher::Configuration::load(const std::string &ns, const std::shared_ptr<sackmesser::Configurations> &server)
     {
-        return server->loadParameter(ns + "description", &description) &&  //
-               server->loadParameter(ns + "frame", &frame) &&              //
-               server->loadParameter(ns + "color/r", &color_r, true) &&    //
-               server->loadParameter(ns + "color/g", &color_g, true) &&    //
-               server->loadParameter(ns + "color/b", &color_b, true) &&    //
-               server->loadParameter(ns + "color/a", &color_a, true);
+        return                                                      // server->loadParameter(ns + "description", &description) &&  //
+          server->loadParameter(ns + "frame", &frame) &&            //
+          server->loadParameter(ns + "color/r", &color_r, true) &&  //
+          server->loadParameter(ns + "color/g", &color_g, true) &&  //
+          server->loadParameter(ns + "color/b", &color_b, true) &&  //
+          server->loadParameter(ns + "color/a", &color_a, true);
     }
 
     SystemPublisher::SystemPublisher(sackmesser_ros::Interface *interface, const std::string &name)
-      : sackmesser_ros::Publisher<visualization_msgs::msg::MarkerArray, Eigen::MatrixXd, gafro::Motor<double>>(interface, name)
+      : sackmesser_ros::Publisher<visualization_msgs::msg::MarkerArray, gafro::System<double>, Eigen::MatrixXd, gafro::Motor<double>>(interface, name)
     {
         config_ = interface->getConfigurations()->load<Configuration>(name);
-        system_ = std::make_unique<gafro::System<double>>(gafro::SystemSerialization(gafro::FilePath(config_.description)).load());
+        // system_ = std::make_unique<gafro::System<double>>(gafro::SystemSerialization(gafro::FilePath(config_.description)).load());
 
         interface->addPublisher("gafro_motor_vector", sackmesser::splitString(name, '/')[1] + "_motors");
     }
 
     SystemPublisher::~SystemPublisher() = default;
 
-    visualization_msgs::msg::Marker convertToMarker(const gafro::Link<double>::Visual *visual)
+    visualization_msgs::msg::Marker convertToMarker(const gafro::LinkVisual *visual)
     {
         visualization_msgs::msg::Marker marker;
 
         switch (visual->getType())
         {
-        case gafro::Link<double>::Visual::Type::SPHERE: {
+        case gafro::LinkVisual::Type::SPHERE: {
             const gafro::visual::Sphere *sphere = static_cast<const gafro::visual::Sphere *>(visual);
 
             marker.type = visualization_msgs::msg::Marker::SPHERE;
@@ -68,7 +68,7 @@ namespace gafro_ros
 
             break;
         }
-        case gafro::Link<double>::Visual::Type::MESH: {
+        case gafro::LinkVisual::Type::MESH: {
             const gafro::visual::Mesh *mesh = static_cast<const gafro::visual::Mesh *>(visual);
 
             marker.type = visualization_msgs::msg::Marker::MESH_RESOURCE;
@@ -80,7 +80,7 @@ namespace gafro_ros
 
             break;
         }
-        case gafro::Link<double>::Visual::Type::CYLINDER: {
+        case gafro::LinkVisual::Type::CYLINDER: {
             const gafro::visual::Cylinder *cylinder = static_cast<const gafro::visual::Cylinder *>(visual);
 
             marker.type = visualization_msgs::msg::Marker::CYLINDER;
@@ -91,7 +91,7 @@ namespace gafro_ros
 
             break;
         }
-        case gafro::Link<double>::Visual::Type::BOX: {
+        case gafro::LinkVisual::Type::BOX: {
             const gafro::visual::Box *box = static_cast<const gafro::visual::Box *>(visual);
 
             marker.type = visualization_msgs::msg::Marker::CUBE;
@@ -108,7 +108,8 @@ namespace gafro_ros
         return marker;
     }
 
-    visualization_msgs::msg::MarkerArray SystemPublisher::createMessage(const Eigen::MatrixXd &position, const gafro::Motor<double> &base) const
+    visualization_msgs::msg::MarkerArray SystemPublisher::createMessage(const gafro::System<double> &system, const Eigen::MatrixXd &position,
+                                                                        const gafro::Motor<double> &base) const
     {
         visualization_msgs::msg::MarkerArray all_markers;
 
@@ -118,15 +119,15 @@ namespace gafro_ros
         {
             std::vector<gafro::Motor<double>> motors;
 
-            gafro::ForwardKinematics<double> kinematics = system_->computeForwardKinematics(position.col(j), base);
+            gafro::ForwardKinematics<double> kinematics = system.computeForwardKinematics(position.col(j), base);
 
             visualization_msgs::msg::MarkerArray markers;
 
             for (const auto &pair : kinematics.getLinkPoses())
             {
-                if (system_->getLink(pair.first)->hasVisual())
+                if (system.getLink(pair.first)->hasVisual())
                 {
-                    const gafro::Link<double>::Visual *visual = system_->getLink(pair.first)->getVisual();
+                    const gafro::LinkVisual *visual = system.getLink(pair.first)->getVisual();
 
                     visualization_msgs::msg::Marker visual_marker = convertToMarker(visual);
 
