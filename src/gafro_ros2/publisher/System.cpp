@@ -17,9 +17,8 @@
     along with gafro. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <gafro/robot/Kinematics.hpp>
 #include <gafro/robot/System.hxx>
-// #include <gafro_robot_descriptions/SystemVisual.hpp>
+#include <gafro/robot/algorithm/ForwardKinematics.hpp>
 #include <gafro_robot_descriptions/gafro_robot_descriptions_package_config.hpp>
 #include <gafro_robot_descriptions/serialization/FilePath.hpp>
 #include <gafro_robot_descriptions/serialization/SystemSerialization.hpp>
