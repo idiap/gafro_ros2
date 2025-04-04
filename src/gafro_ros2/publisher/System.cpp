@@ -31,19 +31,17 @@ namespace gafro_ros
 {
     bool SystemPublisher::Configuration::load(const std::string &ns, const std::shared_ptr<sackmesser::Configurations> &server)
     {
-        return                                                      // server->loadParameter(ns + "description", &description) &&  //
-          server->loadParameter(ns + "frame", &frame) &&            //
-          server->loadParameter(ns + "color/r", &color_r, true) &&  //
-          server->loadParameter(ns + "color/g", &color_g, true) &&  //
-          server->loadParameter(ns + "color/b", &color_b, true) &&  //
-          server->loadParameter(ns + "color/a", &color_a, true);
+        return server->loadParameter(ns + "frame", &frame) &&            //
+               server->loadParameter(ns + "color/r", &color_r, true) &&  //
+               server->loadParameter(ns + "color/g", &color_g, true) &&  //
+               server->loadParameter(ns + "color/b", &color_b, true) &&  //
+               server->loadParameter(ns + "color/a", &color_a, true);
     }
 
     SystemPublisher::SystemPublisher(sackmesser_ros::Interface *interface, const std::string &name)
       : sackmesser_ros::Publisher<visualization_msgs::msg::MarkerArray, gafro::System<double>, Eigen::MatrixXd, gafro::Motor<double>>(interface, name)
     {
         config_ = interface->getConfigurations()->load<Configuration>(name);
-        // system_ = std::make_unique<gafro::System<double>>(gafro::SystemSerialization(gafro::FilePath(config_.description)).load());
 
         interface->addPublisher("gafro_motor_vector", sackmesser::splitString(name, '/')[1] + "_motors");
     }

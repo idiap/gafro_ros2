@@ -46,8 +46,6 @@ namespace gafro_ros
         {
             bool load(const std::string &ns, const std::shared_ptr<sackmesser::Configurations> &server);
 
-            // std::string description;
-
             std::string frame;
 
             double color_r = 1.0;
@@ -62,8 +60,6 @@ namespace gafro_ros
       protected:
       private:
         Configuration config_;
-
-        // std::unique_ptr<gafro::System<double>> system_;
     };
 
 }  // namespace gafro_ros

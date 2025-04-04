@@ -19,10 +19,15 @@
 
 #pragma once
 
-#include <urdf/model.h>
+#include <rclcpp/version.h>
 #include <yaml-cpp/yaml.h>
 
 #include <string>
+#if RCLCPP_VERSION_GTE(28, 0, 0)
+#include <urdf/model.hpp>
+#else
+#include <urdf/model.h>
+#endif
 
 namespace gafro_ros
 {
