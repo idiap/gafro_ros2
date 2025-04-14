@@ -23,7 +23,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <string>
-#if RCLCPP_VERSION_GTE(28, 0, 0)
+#if RCLCPP_VERSION_GTE(28, 3, 3)
 #include <urdf/model.hpp>
 #else
 #include <urdf/model.h>
