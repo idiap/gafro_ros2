@@ -105,10 +105,13 @@ namespace gafro_ros
         return marker;
     }
 
-    visualization_msgs::msg::MarkerArray SystemPublisher::createMessage(const gafro::System<double> &system, const Eigen::MatrixXd &position,
+    visualization_msgs::msg::MarkerArray SystemPublisher::createMessage(const gafro::System<double> &system, const Eigen::MatrixXd &position_in,
                                                                         const gafro::Motor<double> &base) const
     {
         visualization_msgs::msg::MarkerArray all_markers;
+
+        Eigen::VectorXd position = Eigen::VectorXd::Zero(system.getDoF(), 1);
+        position.topRows(position_in.rows()) = position_in;
 
         int id = 0;
 

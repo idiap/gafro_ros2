@@ -42,6 +42,8 @@ namespace gafro_ros
 
             std::string frame;
 
+            double radius;
+
             double color_r = 0.0;
             double color_g = 0.0;
             double color_b = 0.0;

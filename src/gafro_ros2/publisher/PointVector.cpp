@@ -36,6 +36,7 @@ namespace gafro_ros
     bool PointVector::Configuration::load(const std::string &ns, const std::shared_ptr<sackmesser::Configurations> &server)
     {
         return server->loadParameter(ns + "frame", &frame) &&            //
+               server->loadParameter(ns + "radius", &radius, true) &&    //
                server->loadParameter(ns + "color/r", &color_r, true) &&  //
                server->loadParameter(ns + "color/g", &color_g, true) &&  //
                server->loadParameter(ns + "color/b", &color_b, true) &&  //
@@ -52,9 +53,9 @@ namespace gafro_ros
         points_msg.pose.orientation.w = 1.0;
 
         points_msg.type = visualization_msgs::msg::Marker::SPHERE_LIST;
-        points_msg.scale.x = 0.025;
-        points_msg.scale.y = 0.025;
-        points_msg.scale.z = 0.025;
+        points_msg.scale.x = config_.radius;
+        points_msg.scale.y = config_.radius;
+        points_msg.scale.z = config_.radius;
         points_msg.color.r = static_cast<float>(config_.color_r);
         points_msg.color.g = static_cast<float>(config_.color_g);
         points_msg.color.b = static_cast<float>(config_.color_b);

@@ -16,7 +16,7 @@ int main(int argc, char **argv)
         gafro::Point<double> ee_point = ee_motor.apply(gafro::Point<double>());
         gafro::Line<double> ee_line = ee_motor.apply(gafro::Line<double>::Z());
 
-        interface->getCallbacks()->invoke("robot", q, gafro::Motor<double>());
+        interface->getCallbacks()->invoke("robot", panda.getSystem(), q, gafro::Motor<double>());
         interface->getCallbacks()->invoke("ee_motor", ee_motor);
         interface->getCallbacks()->invoke("ee_point", ee_point);
         interface->getCallbacks()->invoke("ee_line", ee_line);

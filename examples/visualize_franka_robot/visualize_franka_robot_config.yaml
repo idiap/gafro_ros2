@@ -39,6 +39,7 @@ publisher:
     topic: ee_point
     callback_queue: ee_point
     frame: world
+    radius: 0.01
     color:
       r: 1.0
       g: 0.0
