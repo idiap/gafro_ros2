@@ -44,4 +44,4 @@ namespace gafro_ros
 
 }  // namespace gafro_ros
 
-// REGISTER_CLASS(sackmesser_ros::base::Subscriber, gafro_ros::SubscriberWrench, "gafro_wrench");
+REGISTER_CLASS(sackmesser_ros::base::Subscriber, gafro_ros::SubscriberWrench, "gafro_wrench");

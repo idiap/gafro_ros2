@@ -65,6 +65,8 @@ target_link_libraries(gafro_ros2
         gafro_robot_descriptions::gafro_robot_descriptions
 )
 
+target_link_options(gafro_ros2 PUBLIC "-Wl,--no-as-needed")
+
 install(
     TARGETS gafro_ros2
     EXPORT gafro_ros2-config-targets
